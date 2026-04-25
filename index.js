@@ -1,5 +1,6 @@
 const express = require("express") ;
 const app = express();
+app.use(express.json()) // to parse JSON request
 app.get("/", function(req,res){
     res.send("Server is up and running");
 })
@@ -30,6 +31,33 @@ app.get("/users/:id", function(req,res){
     }
     res.status(200).json(user);
 });
+
+app.post("/new-users", function(req,res){
+    const {name, email}=req.body;
+
+    //validate input
+    if(!name || !email){
+        return res.status(400).json({
+            error: "Name and email are required",
+        });
+    }
+    //create new user object 
+    const newUser={
+        id: users.length + 1,
+        name: name,
+        email: email,
+    };
+
+    users.push(newUser);
+
+    //201 created= successfully created a resource
+    res.status(201).json({
+      message: "New user created successfully",
+      user: newUser
+});
+
+})
+
 const port =8080
 app.listen(port, function()
 {
